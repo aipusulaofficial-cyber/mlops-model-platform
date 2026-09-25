@@ -1,11 +1,16 @@
 import json
 import logging
 import os
+import time
+import uuid
 
+from fastapi import Request
 from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 
 def configure_observability():
@@ -53,13 +58,6 @@ def get_logger(name):
     l.handlers[:] = [h]
     l.setLevel(os.getenv("LOG_LEVEL", "INFO"))
     return l
-
-
-import time, uuid
-from fastapi import Request
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import Response
-from opentelemetry import trace
 
 
 class PrincipalObservabilityMiddleware(BaseHTTPMiddleware):
