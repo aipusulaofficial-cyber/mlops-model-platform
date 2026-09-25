@@ -1,3 +1,5 @@
+import logging
+
 from opentelemetry import trace
 
 try:
@@ -5,12 +7,12 @@ try:
     from opentelemetry.sdk.trace import TracerProvider
     from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 
-    p = TracerProvider(
+    provider = TracerProvider(
         resource=Resource.create({"service.name": "mlops-model-platform"})
     )
-    p.add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
-    trace.set_tracer_provider(p)
-except Exception:
-    pass
+    provider.add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
+    trace.set_tracer_provider(provider)
+except (ImportError, RuntimeError) as exc:
+    logging.getLogger(__name__).warning("OpenTelemetry setup failed: %s", exc)
 
 tracer = trace.get_tracer("mlops-model-platform")
