@@ -1,10 +1,10 @@
 """MLOps control-plane core: versioned models and guarded promotion state machine."""
 
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 
-class Stage(str, Enum):
+class Stage(StrEnum):
     REGISTERED = "registered"
     VALIDATED = "validated"
     STAGING = "staging"
