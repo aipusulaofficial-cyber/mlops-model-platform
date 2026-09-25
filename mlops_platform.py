@@ -13,6 +13,8 @@ class Stage(str, Enum):
 
 
 @dataclass(frozen=True)
+
+
 class ModelVersion:
     model: str
     version: str
@@ -26,6 +28,7 @@ class PromotionError(Exception):
 
 
 class Registry:
+
     def __init__(self):
         self._items = {}
 
