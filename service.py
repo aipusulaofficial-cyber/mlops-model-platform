@@ -19,6 +19,7 @@ except Exception:
 
 app = FastAPI(title="mlops-model-platform", version="1.0.0")
 tracer = trace.get_tracer("mlops-model-platform")
+
 app.add_middleware(PrincipalObservabilityMiddleware)
 
 
