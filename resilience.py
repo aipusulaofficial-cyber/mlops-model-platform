@@ -11,7 +11,6 @@ from concurrent.futures import TimeoutError as FutureTimeout
 from dataclasses import dataclass
 from typing import TypeVar
 
-T = TypeVar("T")
 
 
 class CircuitOpenError(RuntimeError):
