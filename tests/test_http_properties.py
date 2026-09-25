@@ -14,6 +14,8 @@ def test_contract():
         alphabet=st.characters(blacklist_categories=("Cs",)), min_size=1, max_size=32
     )
 )
+
+
 def test_property(v):
     assert (
         c.post(
