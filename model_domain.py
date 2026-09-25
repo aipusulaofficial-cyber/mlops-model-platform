@@ -11,8 +11,6 @@ class Stage(StrEnum):
 
 
 @dataclass
-
-
 class ModelVersion:
     name: str
     version: str
@@ -32,7 +30,6 @@ class ModelVersion:
 
 
 class ModelCatalog:
-
     def __init__(self):
         self._models = {}
 
