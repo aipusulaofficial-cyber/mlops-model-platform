@@ -25,8 +25,8 @@ app.add_middleware(PrincipalObservabilityMiddleware)
 
 
 class Request(BaseModel):
-    key: str
-    payload: dict = Field(default_factory=dict)
+    key: str = Field(min_length=1, max_length=128)
+    payload: dict = Field(default_factory=dict, max_length=32)
 
 
 @app.get("/health/live")
