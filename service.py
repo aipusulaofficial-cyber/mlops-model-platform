@@ -1,8 +1,9 @@
-from observability import PrincipalObservabilityMiddleware
+import logging
+
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from opentelemetry import trace
 from model_domain import *
+from opentelemetry import trace
+from pydantic import BaseModel
 
 try:
     from opentelemetry.sdk.resources import Resource
@@ -14,8 +15,8 @@ try:
     )
     p.add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
     trace.set_tracer_provider(p)
-except Exception:
-    pass
+except (ImportError, RuntimeError) as exc:
+    logging.getLogger(__name__).warning("OpenTelemetry setup failed: %s", exc)
 
 app = FastAPI(title="mlops-model-platform", version="1.0.0")
 tracer = trace.get_tracer("mlops-model-platform")
