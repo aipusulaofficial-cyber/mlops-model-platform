@@ -36,7 +36,6 @@ def configure_observability():
 
 
 class JsonFormatter(logging.Formatter):
-
     def format(self, record):
         return json.dumps(
             {
@@ -64,7 +63,6 @@ from opentelemetry import trace
 
 
 class PrincipalObservabilityMiddleware(BaseHTTPMiddleware):
-
     async def dispatch(self, request: Request, call_next) -> Response:
         request_id = request.headers.get("x-request-id") or str(uuid.uuid4())
         correlation_id = request.headers.get("x-correlation-id") or request_id
