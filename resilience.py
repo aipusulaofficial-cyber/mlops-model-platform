@@ -6,7 +6,8 @@ import random
 import threading
 import time
 from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FutureTimeout
 from dataclasses import dataclass
 from typing import TypeVar
 
