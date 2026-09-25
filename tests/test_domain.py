@@ -1,4 +1,4 @@
-from model_domain import *
+from model_domain import ModelVersion, Stage
 
 
 def test_lifecycle():
