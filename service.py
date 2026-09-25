@@ -9,7 +9,9 @@ try:
     from opentelemetry.sdk.trace import TracerProvider
     from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 
-    p = TracerProvider(resource=Resource.create({"service.name": "mlops-model-platform"}))
+    p = TracerProvider(
+        resource=Resource.create({"service.name": "mlops-model-platform"})
+    )
     p.add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
     trace.set_tracer_provider(p)
 except Exception:
@@ -26,16 +28,22 @@ class Request(BaseModel):
 
 
 @app.get("/health/live")
+
+
 def live():
     return {"status": "ok"}
 
 
 @app.get("/health/ready")
+
+
 def ready():
     return {"status": "ready"}
 
 
 @app.post("/v1/models")
+
+
 def handle(r: Request):
     with tracer.start_as_current_span("mlops-model-platform.domain"):
         try:
