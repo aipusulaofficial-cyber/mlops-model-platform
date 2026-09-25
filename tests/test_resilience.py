@@ -25,11 +25,14 @@ def test_retry_is_bounded():
             raise TimeoutError
         return "ok"
 
-    assert call_with_retry(
-        fn,
-        policy=RetryPolicy(3, 0),
-        retryable=lambda e: isinstance(e, TimeoutError),
-    ) == "ok"
+    assert (
+        call_with_retry(
+            fn,
+            policy=RetryPolicy(3, 0),
+            retryable=lambda e: isinstance(e, TimeoutError),
+        )
+        == "ok"
+    )
     assert len(n) == 3
 
 
