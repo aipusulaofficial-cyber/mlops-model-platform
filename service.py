@@ -2,7 +2,7 @@ import logging
 
 from fastapi import FastAPI, HTTPException
 from opentelemetry import trace
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from model_domain import ModelVersion
 from observability import PrincipalObservabilityMiddleware
@@ -26,7 +26,7 @@ app.add_middleware(PrincipalObservabilityMiddleware)
 
 class Request(BaseModel):
     key: str
-    payload: dict = {}
+    payload: dict = Field(default_factory=dict)
 
 
 @app.get("/health/live")
