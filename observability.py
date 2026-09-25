@@ -87,3 +87,7 @@ class PrincipalObservabilityMiddleware(BaseHTTPMiddleware):
             request.state.latency_ms = elapsed
             request.state.status = status
             request.state.error_type = error_type
+            if "response" in locals():
+                response.headers["x-request-id"] = request_id
+                response.headers["x-correlation-id"] = correlation_id
+                response.headers["x-latency-ms"] = f"{elapsed:.3f}"
