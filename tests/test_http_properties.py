@@ -13,7 +13,9 @@ def test_contract():
 
 @given(
     st.text(
-        alphabet=st.characters(min_codepoint=32, max_codepoint=126),\n        min_size=1,\n        max_size=32,
+        alphabet=st.characters(min_codepoint=32, max_codepoint=126),
+        min_size=1,
+        max_size=32,
     )
 )
 def test_property(v):
