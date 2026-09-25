@@ -1,14 +1,21 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Any
-from otel_setup import tracer
-app=FastAPI(title="mlops-model-platform",version="1.0.0")
-class ModelRequest(BaseModel): model:str; payload:dict[str,Any]={}
+from opentelemetry import trace
+from model_domain import *
+try:
+ from opentelemetry.sdk.resources import Resource
+ from opentelemetry.sdk.trace import TracerProvider
+ from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+ p=TracerProvider(resource=Resource.create({"service.name":"mlops-model-platform"}));p.add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()));trace.set_tracer_provider(p)
+except Exception: pass
+app=FastAPI(title="mlops-model-platform",version="1.0.0");tracer=trace.get_tracer("mlops-model-platform")
+class Request(BaseModel): key:str; payload:dict={}
 @app.get("/health/live")
 def live(): return {"status":"ok"}
 @app.get("/health/ready")
 def ready(): return {"status":"ready"}
 @app.post("/v1/models")
-def models(r:ModelRequest):
- with tracer.start_as_current_span("model-operation") as s:s.set_attribute("model",r.model)
- return {"status":"accepted","model":r.model}
+def handle(r:Request):
+ with tracer.start_as_current_span("mlops-model-platform.domain"):
+  try: m=ModelVersion(r.key,r.payload.get("version","1")); return {"model":m.name,"version":m.version,"stage":m.stage}
+  except (ValueError,KeyError) as e: raise HTTPException(status_code=400,detail=str(e)) from e
