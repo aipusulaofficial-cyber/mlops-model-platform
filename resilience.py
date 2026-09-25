@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-import random, threading, time
+import random
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 from dataclasses import dataclass
 from typing import Callable, Generic, TypeVar
@@ -19,6 +21,8 @@ class OperationTimeoutError(TimeoutError):
 
 
 @dataclass(frozen=True)
+
+
 class RetryPolicy:
     attempts: int = 3
     base_delay: float = 0.05
@@ -31,6 +35,7 @@ class RetryPolicy:
 
 
 class CircuitBreaker:
+
     def __init__(self, failure_threshold: int = 3, reset_timeout: float = 5.0):
         if failure_threshold < 1 or reset_timeout <= 0:
             raise ValueError("invalid circuit policy")
@@ -41,6 +46,7 @@ class CircuitBreaker:
         self._lock = threading.Lock()
 
     @property
+
     def open(self) -> bool:
         with self._lock:
             return (
@@ -71,6 +77,7 @@ class CircuitBreaker:
 
 
 class BoundedExecutor(Generic[T]):
+
     def __init__(self, limit: int):
         if limit < 1:
             raise ValueError("limit must be positive")
@@ -86,6 +93,7 @@ class BoundedExecutor(Generic[T]):
 
 
 class TokenBucket:
+
     def __init__(self, rate: float, capacity: int):
         if rate <= 0 or capacity < 1:
             raise ValueError("invalid rate limit")
@@ -111,6 +119,7 @@ class TokenBucket:
 
 
 class IdempotencyKeyStore(Generic[T]):
+
     def __init__(self):
         self._results = {}
         self._locks = {}
