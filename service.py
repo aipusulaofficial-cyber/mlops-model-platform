@@ -32,9 +32,11 @@ class Request(BaseModel):
 def live():
     return {"status": "ok"}
 
+
 @app.get("/health/ready")
 def ready():
     return {"status": "ready"}
+
 
 @app.post("/v1/models")
 def handle(r: Request):
