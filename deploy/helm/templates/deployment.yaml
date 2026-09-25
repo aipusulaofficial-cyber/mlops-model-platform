@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: {{ .Chart.Name }}}
+spec:
+ replicas: 2
+ selector: {matchLabels: {app: {{ .Chart.Name }}}}
+ template:
+  metadata: {labels: {app: {{ .Chart.Name }}}}
+  spec:
+   containers:
+   - name: api
+     image: {repository: {{ .Chart.Name }}, tag: latest}
+     ports: [{containerPort: 8000}]
