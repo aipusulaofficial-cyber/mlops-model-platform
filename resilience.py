@@ -11,18 +11,14 @@ from typing import Callable, Generic, TypeVar
 
 T = TypeVar("T")
 
-
 class CircuitOpenError(RuntimeError):
     pass
-
 
 class OperationTimeoutError(TimeoutError):
     pass
 
 
 @dataclass(frozen=True)
-
-
 class RetryPolicy:
     attempts: int = 3
     base_delay: float = 0.05
@@ -33,9 +29,7 @@ class RetryPolicy:
         raw = min(self.max_delay, self.base_delay * (2 ** max(0, attempt - 1)))
         return max(0.0, raw + random.uniform(0.0, self.jitter))
 
-
 class CircuitBreaker:
-
     def __init__(self, failure_threshold: int = 3, reset_timeout: float = 5.0):
         if failure_threshold < 1 or reset_timeout <= 0:
             raise ValueError("invalid circuit policy")
@@ -75,9 +69,7 @@ class CircuitBreaker:
             if self._failures >= self.failure_threshold:
                 self._opened_at = time.monotonic()
 
-
 class BoundedExecutor(Generic[T]):
-
     def __init__(self, limit: int):
         if limit < 1:
             raise ValueError("limit must be positive")
@@ -91,9 +83,7 @@ class BoundedExecutor(Generic[T]):
         finally:
             self._sem.release()
 
-
 class TokenBucket:
-
     def __init__(self, rate: float, capacity: int):
         if rate <= 0 or capacity < 1:
             raise ValueError("invalid rate limit")
@@ -117,9 +107,7 @@ class TokenBucket:
             self.tokens -= cost
             return True
 
-
 class IdempotencyKeyStore(Generic[T]):
-
     def __init__(self):
         self._results = {}
         self._locks = {}
