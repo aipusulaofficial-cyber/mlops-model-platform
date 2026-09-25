@@ -52,12 +52,12 @@ class JsonFormatter(logging.Formatter):
 
 
 def get_logger(name):
-    h = logging.StreamHandler()
-    h.setFormatter(JsonFormatter())
-    l = logging.getLogger(name)
-    l.handlers[:] = [h]
-    l.setLevel(os.getenv("LOG_LEVEL", "INFO"))
-    return l
+    handler = logging.StreamHandler()
+    handler.setFormatter(JsonFormatter())
+    logger = logging.getLogger(name)
+    logger.handlers[:] = [handler]
+    logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
+    return logger
 
 
 class PrincipalObservabilityMiddleware(BaseHTTPMiddleware):
@@ -76,7 +76,9 @@ class PrincipalObservabilityMiddleware(BaseHTTPMiddleware):
                 status = response.status_code
                 response.headers["x-request-id"] = request_id
                 response.headers["x-correlation-id"] = correlation_id
-                response.headers["x-latency-ms"] = f"{(time.perf_counter() - start) * 1000:.3f}"
+                response.headers["x-latency-ms"] = (
+                    f"{(time.perf_counter() - start) * 1000:.3f}"
+                )
                 return response
         except Exception as exc:
             error_type = type(exc).__name__
