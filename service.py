@@ -27,6 +27,7 @@ class Request(BaseModel):
     key: str
     payload: dict = {}
 
+
 @app.get("/health/live")
 def live():
     return {"status": "ok"}
