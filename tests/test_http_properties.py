@@ -4,7 +4,6 @@ from hypothesis import strategies as st
 
 from service import app
 
-
 c = TestClient(app)
 
 
