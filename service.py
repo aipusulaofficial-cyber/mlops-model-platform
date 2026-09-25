@@ -1,3 +1,4 @@
+from observability import PrincipalObservabilityMiddleware
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from opentelemetry import trace
@@ -9,6 +10,7 @@ try:
  p=TracerProvider(resource=Resource.create({"service.name":"mlops-model-platform"}));p.add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()));trace.set_tracer_provider(p)
 except Exception: pass
 app=FastAPI(title="mlops-model-platform",version="1.0.0");tracer=trace.get_tracer("mlops-model-platform")
+app.add_middleware(PrincipalObservabilityMiddleware)
 class Request(BaseModel): key:str; payload:dict={}
 @app.get("/health/live")
 def live(): return {"status":"ok"}
