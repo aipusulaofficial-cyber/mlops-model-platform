@@ -1,5 +1,6 @@
-from mlops_platform import *
 import pytest
+
+from mlops_platform import ModelVersion, PromotionError, Registry, Stage
 
 
 def test_promotion_state_machine_and_gate():
