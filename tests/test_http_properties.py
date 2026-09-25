@@ -17,9 +17,4 @@ def test_contract():
 
 
 def test_property(v):
-    assert (
-        c.post(
-            "/v1/models", json={"key": v, "payload": {"version": v}}
-        ).status_code
-        == 200
-    )
+    assert c.post("/v1/models", json={"key": v, "payload": {"version": v}}).status_code == 200
