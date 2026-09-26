@@ -9,6 +9,7 @@ from mlops_platform import ModelVersion, Stage
 
 class PersistentRegistry:
     """Transactional SQLite registry for single-node or shared-volume deployments."""
+
     def __init__(self, path: str = "models.db") -> None:
         self._path = str(Path(path))
         self._lock = RLock()
@@ -32,31 +33,49 @@ class PersistentRegistry:
         with self._lock, self._connect() as db:
             db.execute(
                 "INSERT INTO models VALUES (?, ?, ?, ?, ?)",
-                (model.model, model.version, model.artifact_uri, json.dumps(model.metrics), model.stage.value),
+                (
+                    model.model,
+                    model.version,
+                    model.artifact_uri,
+                    json.dumps(model.metrics),
+                    model.stage.value,
+                ),
             )
         return model
 
     def get(self, model: str, version: str) -> ModelVersion:
         with self._connect() as db:
-            row = db.execute("SELECT model, version, artifact_uri, metrics, stage FROM models WHERE model=? AND version=?", (model, version)).fetchone()
+            row = db.execute(
+                "SELECT model, version, artifact_uri, metrics, stage FROM models WHERE model=? AND version=?",
+                (model, version),
+            ).fetchone()
         if row is None:
             raise KeyError((model, version))
         return ModelVersion(row[0], row[1], row[2], json.loads(row[3]), Stage(row[4]))
 
     def promote(self, model: str, version: str, target: Stage) -> ModelVersion:
         with self._lock, self._connect() as db:
-            row = db.execute("SELECT model, version, artifact_uri, metrics, stage FROM models WHERE model=? AND version=?", (model, version)).fetchone()
+            row = db.execute(
+                "SELECT model, version, artifact_uri, metrics, stage FROM models WHERE model=? AND version=?",
+                (model, version),
+            ).fetchone()
             if row is None:
                 raise KeyError((model, version))
             current = Stage(row[4])
             allowed = {
-                Stage.REGISTERED: {Stage.VALIDATED}, Stage.VALIDATED: {Stage.STAGING},
-                Stage.STAGING: {Stage.PRODUCTION}, Stage.PRODUCTION: {Stage.ARCHIVED}, Stage.ARCHIVED: set(),
+                Stage.REGISTERED: {Stage.VALIDATED},
+                Stage.VALIDATED: {Stage.STAGING},
+                Stage.STAGING: {Stage.PRODUCTION},
+                Stage.PRODUCTION: {Stage.ARCHIVED},
+                Stage.ARCHIVED: set(),
             }
             if target not in allowed[current]:
                 raise ValueError(f"invalid transition {current}->{target}")
             metrics = json.loads(row[3])
             if target == Stage.PRODUCTION and metrics.get("quality", 0) < 0.8:
                 raise ValueError("quality gate failed")
-            db.execute("UPDATE models SET stage=? WHERE model=? AND version=?", (target.value, model, version))
+            db.execute(
+                "UPDATE models SET stage=? WHERE model=? AND version=?",
+                (target.value, model, version),
+            )
             return ModelVersion(row[0], row[1], row[2], metrics, target)
