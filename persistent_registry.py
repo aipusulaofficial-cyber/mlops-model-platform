@@ -1,6 +1,5 @@
 import json
 import sqlite3
-from dataclasses import dataclass
 from pathlib import Path
 from threading import RLock
 
@@ -14,14 +13,16 @@ class PersistentRegistry:
         self._path = str(Path(path))
         self._lock = RLock()
         with self._connect() as db:
-            db.execute("""CREATE TABLE IF NOT EXISTS models (
+            db.execute(
+                """CREATE TABLE IF NOT EXISTS models (
                 model TEXT NOT NULL,
                 version TEXT NOT NULL,
                 artifact_uri TEXT NOT NULL,
                 metrics TEXT NOT NULL,
                 stage TEXT NOT NULL,
                 PRIMARY KEY(model, version)
-            )""")
+            )"""
+            )
 
     def _connect(self):
         db = sqlite3.connect(self._path, timeout=10, isolation_level="IMMEDIATE")
@@ -46,7 +47,8 @@ class PersistentRegistry:
     def get(self, model: str, version: str) -> ModelVersion:
         with self._connect() as db:
             row = db.execute(
-                "SELECT model, version, artifact_uri, metrics, stage FROM models WHERE model=? AND version=?",
+                "SELECT model, version, artifact_uri, metrics, stage "
+                "FROM models WHERE model=? AND version=?",
                 (model, version),
             ).fetchone()
         if row is None:
@@ -56,7 +58,8 @@ class PersistentRegistry:
     def promote(self, model: str, version: str, target: Stage) -> ModelVersion:
         with self._lock, self._connect() as db:
             row = db.execute(
-                "SELECT model, version, artifact_uri, metrics, stage FROM models WHERE model=? AND version=?",
+                "SELECT model, version, artifact_uri, metrics, stage "
+                "FROM models WHERE model=? AND version=?",
                 (model, version),
             ).fetchone()
             if row is None:
