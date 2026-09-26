@@ -24,9 +24,13 @@ tracer = trace.get_tracer("mlops-model-platform")
 app.add_middleware(PrincipalObservabilityMiddleware)
 
 
+class ModelPayload(BaseModel):
+    version: str = Field(default="1", min_length=1, max_length=64)
+
+
 class Request(BaseModel):
     key: str = Field(min_length=1, max_length=128)
-    payload: dict = Field(default_factory=dict, max_length=32)
+    payload: ModelPayload = Field(default_factory=ModelPayload)
 
 
 @app.get("/health/live")
@@ -43,7 +47,7 @@ def ready():
 def handle(r: Request):
     with tracer.start_as_current_span("mlops-model-platform.domain"):
         try:
-            m = ModelVersion(r.key, r.payload.get("version", "1"))
+            m = ModelVersion(r.key, r.payload.version)
             return {"model": m.name, "version": m.version, "stage": m.stage}
         except (ValueError, KeyError) as e:
             raise HTTPException(status_code=400, detail=str(e)) from e
