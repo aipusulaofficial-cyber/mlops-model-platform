@@ -1,29 +1,26 @@
 # MLOps Model Platform
 
-**Principal-level reference implementation** focused on model lifecycle boundaries, reproducible operations, validation contracts, and deployment-oriented controls.
+A model lifecycle platform connecting validation, reproducible operations and deployment-oriented controls across the model delivery path.
 
-## Engineering intent
-- Clear domain boundaries and replaceable infrastructure adapters
-- Explicit contracts, validation, and failure semantics
-- Deterministic tests with external dependencies isolated
-- Operational readiness through health checks, CI, and security validation
-- Architecture decisions documented so trade-offs are reviewable
+## Lifecycle
+```text
+model source -> validation -> packaged artifact -> deployment contract -> runtime -> evidence
+```
 
-## System design
-The repository is structured around a small set of explicit responsibilities rather than framework-driven coupling. Request/event handling, domain policy, infrastructure adapters, and operational concerns are kept separable so individual components can evolve without forcing a system-wide rewrite.
+## Project boundaries
+- **Model lifecycle** defines controlled transitions from source to deployable artifact.
+- **Validation** checks contract and release prerequisites.
+- **Deployment** keeps runtime assumptions explicit.
+- **Operations** provides health, telemetry and failure evidence.
+- **Security** scans dependencies and artifacts before delivery.
 
-## Quality bar
-- **Correctness:** contract and edge-case tests cover expected and failure paths
-- **Reliability:** bounded work, explicit timeouts/failures, and health signals where applicable
-- **Security:** least-privilege boundaries, input validation, and safe defaults
-- **Observability:** correlation/context propagation and actionable operational signals
-- **Delivery:** reproducible CI validation before changes are considered complete
+## Reliability
+The platform treats invalid model state, failed validation and deployment errors as explicit lifecycle failures. Reproducibility is preferred over hidden mutable state.
 
-## Principal engineering contract
-See [docs/PRINCIPAL-ENGINEERING.md](docs/PRINCIPAL-ENGINEERING.md) for the reviewable engineering contract, NFRs, and change-safety checklist.
+## Delivery
+CI, production tests and security/SBOM checks validate the release path. Deployment configuration is versioned with the application.
 
-## Architecture & decisions
-See [ARCHITECTURE.md](ARCHITECTURE.md) and the ADRs directory for system boundaries, key trade-offs, and extension points.
+## Evidence
+[ARCHITECTURE.md](ARCHITECTURE.md) · [docs/PRINCIPAL-ENGINEERING.md](docs/PRINCIPAL-ENGINEERING.md) · [ADRs](ADRs/)
 
-## Engineering principle
-The goal is not to maximize framework complexity; it is to make important behavior **explicit, testable, observable, and replaceable**.
+**Engineering chain:** Code → Contract → Test → Security → Runtime → Observability → Deployment → Evidence.
