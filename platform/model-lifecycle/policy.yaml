@@ -1,0 +1,12 @@
+version: "1"
+promotion:
+  required_evidence:
+    - security
+    - quality
+    - cost
+    - provenance
+  canary_required: true
+rollback:
+  required: true
+audit:
+  required: true
