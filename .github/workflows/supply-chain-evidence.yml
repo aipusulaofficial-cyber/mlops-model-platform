@@ -13,9 +13,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: Dependency audit
-        shell: bash
         run: |
           if [ -f requirements.txt ] || [ -f pyproject.toml ] || [ -f setup.py ]; then
             python -m pip install --disable-pip-version-check pip-audit
@@ -24,9 +23,8 @@ jobs:
             echo "No Python dependency manifest detected; dependency audit is not applicable."
           fi
       - name: Secret pattern gate
-        shell: bash
         run: |
-          ! grep -RInE '(AKIA[0-9A-Z]{16}|BEGIN (RSA|EC|OPENSSH) PRIVATE KEY|ghp_[A-Za-z0-9]{20,})' .             --exclude-dir=.git --exclude-dir=.github
+          ! grep -RInE '(AKIA[0-9A-Z]{16}|BEGIN (RSA|EC|OPENSSH) PRIVATE KEY|ghp_[A-Za-z0-9]{20,})' . --exclude-dir=.git --exclude-dir=.github
       - name: Evidence files
         run: |
           test -f docs/SUPPLY-CHAIN-BENCHMARK-RELIABILITY.md
