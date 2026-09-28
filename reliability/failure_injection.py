@@ -1,5 +1,6 @@
 """Small, deterministic failure-injection checks for runtime guard behavior."""
 
+
 from __future__ import annotations
 
 
