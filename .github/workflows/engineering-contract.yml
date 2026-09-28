@@ -20,3 +20,5 @@ jobs:
       run-build: true
 
 # Contract runner dependency sync.
+
+# Runtime schema validation refresh.
