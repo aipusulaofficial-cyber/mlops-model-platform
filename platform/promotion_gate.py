@@ -1,6 +1,5 @@
 """Model promotion gate."""
 
-
 REQUIRED = ("security", "quality", "cost", "provenance")
 
 
