@@ -3,6 +3,7 @@
 This intentionally measures the repository's available workload without inventing
 production numbers. Replace the workload adapter with the real service benchmark.
 """
+
 from __future__ import annotations
 
 import argparse
