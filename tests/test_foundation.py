@@ -6,3 +6,5 @@ def test_foundation_contract():
     assert e["decision"] == "DENY"
     assert e["error"] == "blocked"
 
+
+# coverage marker
