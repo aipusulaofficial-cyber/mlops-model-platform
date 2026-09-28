@@ -15,4 +15,4 @@ testpaths=["tests"]
 pythonpath=["."]
 
 [tool.setuptools]
-py-modules=["service"]
+py-modules=["mlops_platform","model_domain","observability","otel_setup","persistent_registry","resilience","service"]
