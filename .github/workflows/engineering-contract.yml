@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  id-token: write
+  attestations: write
 
 jobs:
   contract:
@@ -16,5 +18,3 @@ jobs:
       python-version: "3.11"
       run-tests: true
       run-build: true
-
-# Runtime evidence contract validation enabled.
