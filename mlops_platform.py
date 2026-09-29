@@ -1,5 +1,6 @@
 """MLOps control-plane core: versioned models and guarded promotion state machine."""
 
+import math
 from dataclasses import dataclass
 from enum import StrEnum
 
@@ -25,6 +26,16 @@ class PromotionError(Exception):
     pass
 
 
+def valid_production_quality(metrics: dict[str, float]) -> bool:
+    quality = metrics.get("quality")
+    return (
+        not isinstance(quality, bool)
+        and isinstance(quality, (int, float))
+        and math.isfinite(quality)
+        and 0.8 <= quality <= 1.0
+    )
+
+
 class Registry:
     def __init__(self):
         self._items = {}
@@ -47,7 +58,7 @@ class Registry:
         }
         if target not in allowed[m.stage]:
             raise PromotionError(f"invalid transition {m.stage}->{target}")
-        if target == Stage.PRODUCTION and m.metrics.get("quality", 0) < 0.8:
+        if target == Stage.PRODUCTION and not valid_production_quality(m.metrics):
             raise PromotionError("quality gate failed")
         n = ModelVersion(m.model, m.version, m.artifact_uri, m.metrics, target)
         self._items[(model, version)] = n
