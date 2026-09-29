@@ -3,7 +3,7 @@ import sqlite3
 from pathlib import Path
 from threading import RLock
 
-from mlops_platform import ModelVersion, Stage
+from mlops_platform import ModelVersion, Stage, valid_production_quality
 
 
 class PersistentRegistry:
@@ -75,7 +75,7 @@ class PersistentRegistry:
             if target not in allowed[current]:
                 raise ValueError(f"invalid transition {current}->{target}")
             metrics = json.loads(row[3])
-            if target == Stage.PRODUCTION and metrics.get("quality", 0) < 0.8:
+            if target == Stage.PRODUCTION and not valid_production_quality(metrics):
                 raise ValueError("quality gate failed")
             db.execute(
                 "UPDATE models SET stage=? WHERE model=? AND version=?",
