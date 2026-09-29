@@ -1,3 +1,4 @@
+import json
 from model_domain import ModelCatalog, ModelVersion, Stage
 catalog=ModelCatalog(); m=ModelVersion("evidence-model","1.0"); catalog.register(m)
 transitions=[]
@@ -7,4 +8,4 @@ try: m.promote(Stage.VALIDATED)
 except ValueError: blocked=True
 report={"registered":catalog.get("evidence-model","1.0") is m,"promotion_path":transitions,"final_stage":m.stage.value,"invalid_transition_blocked":blocked}
 if transitions!=["validated","staging","production"] or not blocked: raise SystemExit(report)
-print(report)
+print(json.dumps(report, sort_keys=True))
