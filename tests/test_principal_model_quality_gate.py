@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from mlops_platform import ModelVersion, Registry, Stage
+from mlops_platform import ModelVersion, PromotionError, Registry, Stage
 from persistent_registry import PersistentRegistry
 
 
@@ -12,8 +12,7 @@ def test_production_gate_fails_closed_in_memory_and_persistent(tmp_path, quality
 
     memory = Registry()
     memory.register(model)
-    with pytest.raises(ValueError, match="quality gate"):
-        # Memory registry raises PromotionError, not ValueError.
+    with pytest.raises(PromotionError, match="quality gate"):
         memory.promote("model", "v1", Stage.PRODUCTION)
 
     persistent = PersistentRegistry(str(tmp_path / "models.db"))
