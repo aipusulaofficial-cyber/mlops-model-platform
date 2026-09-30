@@ -1,5 +1,10 @@
 # MLOps Model Platform
 
+[![CI](https://github.com/aipusulaofficial-cyber/mlops-model-platform/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/aipusulaofficial-cyber/mlops-model-platform/actions/workflows/ci.yml)
+[![Production Tests](https://github.com/aipusulaofficial-cyber/mlops-model-platform/actions/workflows/production-tests.yml/badge.svg?branch=main)](https://github.com/aipusulaofficial-cyber/mlops-model-platform/actions/workflows/production-tests.yml)
+[![Security / SBOM](https://github.com/aipusulaofficial-cyber/mlops-model-platform/actions/workflows/security-sbom.yml/badge.svg?branch=main)](https://github.com/aipusulaofficial-cyber/mlops-model-platform/actions/workflows/security-sbom.yml)
+
+
 A model lifecycle platform connecting validation, reproducible operations and deployment-oriented controls across the model delivery path.
 
 ## Lifecycle
