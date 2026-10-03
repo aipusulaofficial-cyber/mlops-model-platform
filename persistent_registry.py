@@ -1,4 +1,5 @@
 import json
+import math
 import sqlite3
 from pathlib import Path
 from threading import RLock
@@ -75,8 +76,15 @@ class PersistentRegistry:
             if target not in allowed[current]:
                 raise ValueError(f"invalid transition {current}->{target}")
             metrics = json.loads(row[3])
-            if target == Stage.PRODUCTION and metrics.get("quality", 0) < 0.8:
-                raise ValueError("quality gate failed")
+            if target == Stage.PRODUCTION:
+                quality = metrics.get("quality")
+                if (
+                    not isinstance(quality, (int, float))
+                    or isinstance(quality, bool)
+                    or not math.isfinite(quality)
+                    or not 0.8 <= quality <= 1.0
+                ):
+                    raise ValueError("quality gate failed")
             db.execute(
                 "UPDATE models SET stage=? WHERE model=? AND version=?",
                 (target.value, model, version),
